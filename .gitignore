@@ -1,0 +1,25 @@
+# Eclipse project files
+.settings
+.classpath
+.project
+.metadata
+*.launch
+
+
+# Always ignore these directories/files
+target
+*.log
+src/main/webapp/WEB-INF/classes/
+src/main/webapp/WEB-INF/deploy/
+war/
+
+#caching for already compiled files
+www-test/
+
+
+
+*.class
+
+# Package Files #
+*.jar
+*.war
