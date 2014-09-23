@@ -1,7 +1,7 @@
-OpendID-Consumer
+OpenID-Consumer
 =========
 
-Simple OpendID Consumer for NCU
+Simple OpenID Consumer for NCU
 
   - Simple
   - Only for NCU
