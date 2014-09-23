@@ -37,7 +37,7 @@ you have to change them to your own datas
 
 ##### Use it in programming
 
-first you have to create a instance of OpenIDManager
+first you have to create an instance of OpenIDManager
 ```sh
 OpenIDManager openIDManager = new OpenIDManager();
 ```
