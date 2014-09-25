@@ -39,14 +39,14 @@ public class OpenIDSetting {
                 resultUrl += parameters[i]
                         + "="
                         + URLEncoder.encode(prop.getProperty(parameters[i]),
-                                "UTF-8") + "&";
-                resultUrl += parameters[parameters.length - 1]
-                        + "="
-                        + URLEncoder
-                                .encode(prop
-                                        .getProperty(parameters[parameters.length - 1]),
-                                        "UTF-8");
+                                "UTF-8") + "&";                
             }
+            resultUrl += parameters[parameters.length - 1]
+                    + "="
+                    + URLEncoder
+                            .encode(prop
+                                    .getProperty(parameters[parameters.length - 1]),
+                                    "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
