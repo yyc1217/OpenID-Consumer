@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>tw.edu.ncu.cc</groupId>
-  <artifactId>manage</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>manage-openid</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>OpendID Consumer for NCU</name>
@@ -15,19 +15,19 @@
   </properties>
 
   <dependencies>
-  
-  	<dependency>
-		<groupId>javax.servlet</groupId>
-		<artifactId>servlet-api</artifactId>
-		<version>2.5</version>
-		<scope>provided</scope>
-	</dependency>
-  
-  <dependency>
-	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-io</artifactId>
-	<version>1.3.2</version>
-</dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
   
     <dependency>
       <groupId>junit</groupId>
@@ -35,5 +35,7 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
+
 </project>
