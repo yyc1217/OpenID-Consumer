@@ -1,124 +1,89 @@
 package tw.edu.ncu.cc.manage.openid;
 
+import org.apache.commons.io.IOUtils;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
+public class OpenIDManager {
 
-import org.apache.commons.io.IOUtils;
-
-public class OpenIDManager {    
-    private static OpenIDSetting setting;
-    private static final String CHARSET = "UTF-8";
-    private static final String CORRECTRESPONE = "is_valid:true";
+    private OpenIDSetting setting;
 
     public OpenIDManager() throws OpenIDException {
-        if (setting == null) {
-            setting = new OpenIDSettingLoader()
-                    .getSetting("openidSetting.properties");
-        }
-    }   
-    
+        this( "openidSetting.properties" );
+    }
+
+    public OpenIDManager( String path ) throws OpenIDException {
+        setting = new OpenIDSettingLoader().getSetting( path );
+    }
+
     public String getURLString() {
         return setting.getURLString();
     }
-    
-    public boolean checkAuthentication(HttpServletRequest request) {
-        boolean flag= false;
+
+    public boolean isValid( HttpServletRequest request ) {
         try {
-            String checkUrl = createCheckUrl(request);
-            String result =getResultFromUrl(new URL(checkUrl));
-            if (isResultTrue(result)) {
-                flag= true;
-            }
-        } catch (IOException e) {
-            flag= false;
+            String checkUrl = createCheckURL( request );
+            String result = getResultFromURL( new URL( checkUrl ) );
+            return isResultCorrect( result );
+        } catch ( IOException e ) {
+            throw new RuntimeException( "cannot check validation of openid response", e );
         }
-        return flag;
-    }
-    
-    @SuppressWarnings("rawtypes")
-    public String getIdentityID(HttpServletRequest request){
-        Map map =request.getParameterMap();
-        if(map!=null){
-            Map<String, String> re = convertMapToStringMap(map);
-            return getIDFromURL(re.get("openid.identity"));
-        }
-        return null;        
-    }
-    private String getIDFromURL(String url){
-        return url.split("user/")[1];
-    }
-    
-    private String createCheckUrl(HttpServletRequest request) throws UnsupportedEncodingException{
-        StringBuffer receivingURL =new StringBuffer(setting.getProp().getProperty("openid.op_endpoint"));
-        receivingURL.append("?openid.mode=check_authentication");
-       
-        receivingURL.append("&openid.realm="+URLEncoder.encode(setting.getProp().getProperty("openid.realm"), CHARSET));        
-        String queryString = getQueryStringFromRequest(request);
-        receivingURL.append(queryString);
-            return receivingURL.toString();        
     }
 
-    @SuppressWarnings("rawtypes")
-    private Map<String, String> convertMapToStringMap(Map request) {
-        Map<String, String> re = new HashMap<String, String>();
-        for (Object oo : request.keySet()) {
-            re.put((String) oo, ((String[]) request.get(oo))[0]);
+    public String getIdentity( HttpServletRequest request ) {
+        Map map = request.getParameterMap();
+        if( map == null ) {
+            return null;
+        } else {
+            Map< String, String > parameters = OpenIDUtil.convertToStringMap( map );
+            String openidIdentity = parameters.get( OpenIDContants.IDENTITY );
+            return openidIdentity.split( "user/" )[ 1 ];
         }
-        return re;
-    }
-    
-    @SuppressWarnings("rawtypes")
-    private String getQueryStringFromRequest(HttpServletRequest request) throws UnsupportedEncodingException{
-        StringBuffer tmp = new StringBuffer();
-        Map map =request.getParameterMap();
-        if(map!=null){
-            Set keys = map.keySet();
-            for(Object keyObject : keys){
-                String key = (String) keyObject;
-                if(!key.equals("openid.ns") && !key.equals("openid.mode") ){
-                    tmp.append("&").append(key).append("=").append(  getEncodedString( ((String [])map.get(key))[0] ) );
-                }
-            }
-            return tmp.toString();
-        }
-        return null;
     }
 
-    private String getEncodedString(String originalString) throws UnsupportedEncodingException{
-        return URLEncoder.encode(originalString,CHARSET);
-    }
-    
-    private boolean isResultTrue(String text) {
-        return text.trim().equals(CORRECTRESPONE);
+    private String createCheckURL( HttpServletRequest request ) throws UnsupportedEncodingException {
+
+        Properties properties = setting.getProperties();
+        String endpoint = properties.getProperty( OpenIDContants.END_POINT );
+        String realm    = properties.getProperty( OpenIDContants.REALM );
+
+        Map< String, String > parameters = getRequiredParameterMap( request );
+        parameters.put( OpenIDContants.MODE, OpenIDContants.CHECK_AUTHENTICATION );
+        parameters.put( OpenIDContants.REALM, OpenIDUtil.urlEncode( realm ) );
+
+        return  OpenIDUtil.buildURLWithParameters( endpoint, parameters );
     }
 
-    private String getResultFromUrl(URL obj) throws IOException {
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("GET");
-        InputStream inputStream=null;
-        String text=null;
-        try{
-            inputStream = con.getInputStream();
-            text = IOUtils.toString(inputStream, CHARSET);
-        }finally{
-            if(inputStream!=null){
-                try{
-                    inputStream.close();
-                    }catch(IOException e){
-                        text=null;
-                    }
-            }
-        }        
-        return text;
+    private Map< String, String > getRequiredParameterMap( HttpServletRequest request ) {
+        Map map = request.getParameterMap();
+        if( map == null ) {
+            return new HashMap<>(); //TODO CHECK VALIDATION
+        } else {
+            Map< String, String > stringMap = OpenIDUtil.convertToStringMap( request.getParameterMap() );
+            stringMap.remove( OpenIDContants.NAME_SPACE );
+            stringMap.remove( OpenIDContants.MODE );
+            return stringMap;
+        }
+    }
+
+    private boolean isResultCorrect( String text ) {
+        return text.trim().equals( OpenIDContants.CORRECT_RESPONSE );
+    }
+
+    private String getResultFromURL( URL url ) throws IOException {
+        HttpURLConnection connection = ( HttpURLConnection ) url.openConnection();
+        connection.setRequestMethod( "GET" );
+        try ( InputStream inputStream = connection.getInputStream() ) {
+            return IOUtils.toString( inputStream, OpenIDContants.CHARSET );
+        }
     }
 
 }
