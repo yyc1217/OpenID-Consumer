@@ -5,6 +5,8 @@
 .metadata
 *.launch
 
+.idea/
+.iml
 
 # Always ignore these directories/files
 target
