@@ -10,59 +10,49 @@ Simple OpenID Consumer for NCU
 Version
 ----
 
-0.1-beta
+0.1-SNAPSHOT
 
 
 How to use
 --------------
 
+##### setting
 
-##### setting files
+* src/main/resources/openidSetting.properties ( customizable )
 
-* src/main/resources/openidSetting.properties
-* src/main/resources/openidCheck.properties
-
-you only have to edit openidSetting.properties with following properties
+you only have to edit the following properties
 
 ```sh
 openid.return_to=http://140.115.3.97/manage/auth
 openid.realm=http://140.115.3.97
 ```
 
-you have to change them to your own datas
+##### usage
 
-
-
-
-
-##### Use it in programming
-
-first you have to create an instance of OpenIDManager
+1. you have to create an instance of OpenIDManager
 ```sh
-OpenIDManager openIDManager = new OpenIDManager();
+OpenIDManager openIDManager = new OpenIDManager(); //default is 'openidSetting.properties'
+...or
+OpenIDManager openIDManager = new OpenIDManager( "path/to/your/setting" );
 ```
 
-second you have to get the URL used for being clicked or redirected by user
+2. you can get the URL for being clicked or redirected by user
 ```sh
-String url=openIDManager.getURLString();
+String url = openIDManager.getURLString();
 ```
 
-after you revice the request from user which is redirected from portal
-you can simply put the request parameters' map into the function
+3. after revice the request which is redirected from portal
+you **must** validate it or it will be unsecured
 ```sh
-Map map=request.getParameterMap();
-boolean isCorrect=openIDManager.checkAuthentication(map);
+boolean isValid = openIDManager.isValid( request );
 ```
 
-if respone is true, you can get user's data
+4. you can get the user data next if respone above is valid
 ```sh
-Map map=request.getParameterMap();
-String id=openIDManager.getStudentID(map);
+String id = openIDManager.getIdentity( request );
 ```
-
 
 
 License
 ----
-
 Apache2.0
