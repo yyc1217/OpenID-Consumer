@@ -1,0 +1,18 @@
+apply plugin: 'war'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+
+    compile 'commons-io:commons-io:2.4'
+
+    providedCompile 'javax.servlet:servlet-api:2.5'
+
+}
+
+
+

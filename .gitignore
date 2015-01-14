@@ -6,7 +6,7 @@
 *.launch
 
 .idea/
-.iml
+*.iml
 
 # Always ignore these directories/files
 target
