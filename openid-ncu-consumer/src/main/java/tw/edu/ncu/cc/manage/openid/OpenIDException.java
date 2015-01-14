@@ -2,15 +2,12 @@ package tw.edu.ncu.cc.manage.openid;
 
 public class OpenIDException extends Exception {
 
-    private static final long serialVersionUID = 1L;
-    private final String error;
-
-    public OpenIDException(String error) {
-        this.error = error;
+    public OpenIDException( String message ) {
+        super( message );
     }
 
-    @Override
-    public String toString() {
-        return "openid exception: " + error;
+    public OpenIDException( String message, Throwable cause ) {
+        super( message, cause );
     }
+
 }
