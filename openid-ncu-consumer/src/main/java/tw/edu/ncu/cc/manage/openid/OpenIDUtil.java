@@ -23,7 +23,7 @@ public class OpenIDUtil {
         return builder.deleteCharAt( builder.length()-1 ).toString();
     }
 
-    public static String urlEncode( String s ) throws UnsupportedEncodingException {
+    private static String urlEncode( String s ) throws UnsupportedEncodingException {
         return URLEncoder.encode( s, OpenIDContants.CHARSET );
     }
 

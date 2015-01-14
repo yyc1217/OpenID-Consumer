@@ -57,7 +57,7 @@ public class OpenIDManager {
 
         Map< String, String > parameters = getRequiredParameterMap( request );
         parameters.put( OpenIDContants.MODE, OpenIDContants.CHECK_AUTHENTICATION );
-        parameters.put( OpenIDContants.REALM, OpenIDUtil.urlEncode( realm ) );
+        parameters.put( OpenIDContants.REALM, realm );
 
         return  OpenIDUtil.buildURLWithParameters( endpoint, parameters );
     }
@@ -65,7 +65,7 @@ public class OpenIDManager {
     private Map< String, String > getRequiredParameterMap( HttpServletRequest request ) {
         Map map = request.getParameterMap();
         if( map == null ) {
-            return new HashMap<>(); //TODO CHECK VALIDATION
+            return new HashMap<>();
         } else {
             Map< String, String > stringMap = OpenIDUtil.convertToStringMap( request.getParameterMap() );
             stringMap.remove( OpenIDContants.NAME_SPACE );

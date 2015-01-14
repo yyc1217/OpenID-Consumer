@@ -15,10 +15,6 @@ public class OpenIDSetting {
         return properties;
     }
 
-    public void setProperties( Properties properties ) {
-        this.properties = properties;
-    }
-
     public String getURLString() {
         Map< String, String > params = OpenIDUtil.convertToStringMap( properties );
         String baseURLString = properties.getProperty( OpenIDContants.END_POINT );
