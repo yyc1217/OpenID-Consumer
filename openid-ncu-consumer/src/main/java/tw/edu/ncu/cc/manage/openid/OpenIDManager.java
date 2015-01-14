@@ -24,6 +24,10 @@ public class OpenIDManager {
         setting = new OpenIDSettingLoader().getSetting( path );
     }
 
+    public OpenIDManager( Properties properties ) {
+        setting = new OpenIDSetting( properties );
+    }
+
     public String getURLString() {
         return setting.getURLString();
     }
