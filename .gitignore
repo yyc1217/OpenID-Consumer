@@ -25,3 +25,6 @@ www-test/
 # Package Files #
 *.jar
 *.war
+
+.gradle
+build
